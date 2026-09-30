@@ -1,0 +1,33 @@
+{
+  "name": "estatepm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EstatePM — Alamait property & project management",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev -w @estatepm/api\" \"npm run dev -w @estatepm/web\"",
+    "dev:api": "npm run dev -w @estatepm/api",
+    "dev:web": "npm run dev -w @estatepm/web",
+    "build": "npm run build -w @estatepm/api && npm run build -w @estatepm/web",
+    "db:up": "docker compose up -d",
+    "db:docker": "docker compose up -d",
+    "db:init": "npm run db:local:ps",
+    "db:init:docker": "docker compose up -d && npm run db:setup",
+    "db:setup": "npm run db:migrate:deploy -w @estatepm/api && npm run db:seed -w @estatepm/api",
+    "db:portfolio": "npm run db:properties -w @estatepm/api && npm run db:portfolio:load -w @estatepm/api",
+    "db:properties": "npm run db:properties:load -w @estatepm/api",
+    "db:properties:all": "node scripts/db-load-all.mjs",
+    "db:clean": "npm run db:clean:load -w @estatepm/api",
+    "db:local": "node scripts/init-local-db.mjs",
+    "db:local:ps": "powershell -ExecutionPolicy Bypass -File scripts/db-local.ps1",
+    "db:down": "docker compose down",
+    "db:migrate": "npm run db:migrate -w @estatepm/api",
+    "db:seed": "npm run db:seed -w @estatepm/api",
+    "db:studio": "npm run db:studio -w @estatepm/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

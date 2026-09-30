@@ -1,0 +1,162 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --color-surface: #f5f6f8;
+  --color-card: #ffffff;
+  --color-border: #eceef2;
+  --color-alamait-navy: #0f1b2d;
+  --color-alamait-gold: #c9a227;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+  color: #111827;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Synchro-style cards ── */
+.card {
+  @apply bg-white rounded-2xl border border-[#eceef2] shadow-[0_1px_3px_rgba(0,0,0,0.04)];
+}
+
+.card-hover {
+  @apply transition-all duration-200 hover:shadow-[0_6px_24px_rgba(0,0,0,0.06)] hover:border-gray-200;
+}
+
+.page-shell {
+  @apply p-5 lg:p-6 max-w-[1440px] mx-auto;
+}
+
+.section-label {
+  @apply text-[11px] font-semibold uppercase tracking-wider text-gray-400;
+}
+
+.section-title {
+  @apply text-[15px] font-bold text-gray-900;
+}
+
+/* ── Compact form fields ── */
+.input-field {
+  @apply w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-white text-[13px] text-gray-900
+    placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/8 focus:border-gray-300;
+}
+
+.select-field {
+  @apply w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-white text-[13px] text-gray-900
+    focus:outline-none focus:ring-2 focus:ring-gray-900/8 focus:border-gray-300 cursor-pointer;
+}
+
+.textarea-field {
+  @apply w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-white text-[13px] resize-none
+    focus:outline-none focus:ring-2 focus:ring-gray-900/8 focus:border-gray-300;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl
+    bg-gray-900 text-white text-[13px] font-semibold hover:bg-gray-800 transition-colors;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl
+    bg-white text-gray-700 text-[13px] font-semibold border border-gray-200 hover:bg-gray-50 transition-colors;
+}
+
+.btn-accent {
+  @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl
+    bg-violet-600 text-white text-[13px] font-semibold hover:bg-violet-700 transition-colors;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg
+    text-gray-500 text-[13px] font-medium hover:bg-gray-100 hover:text-gray-800 transition-colors;
+}
+
+.tab-group {
+  @apply inline-flex gap-0.5 bg-gray-100 p-1 rounded-xl;
+}
+
+.tab-item {
+  @apply px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all;
+}
+
+.tab-item-active {
+  @apply bg-white text-gray-900 shadow-sm;
+}
+
+.tab-item-inactive {
+  @apply text-gray-500 hover:text-gray-700;
+}
+
+.pill {
+  @apply inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold;
+}
+
+.metric-card {
+  @apply bg-white rounded-2xl border border-[#eceef2] shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4;
+}
+
+.metric-card-value {
+  @apply text-xl font-bold text-gray-900 tracking-tight tabular-nums mt-0.5;
+}
+
+.metric-card-label {
+  @apply text-[11px] font-medium text-gray-400;
+}
+
+.data-table { @apply w-full text-[13px]; }
+.data-table thead tr { @apply border-b border-gray-100; }
+.data-table th { @apply text-left py-2.5 px-3 text-[10px] font-bold uppercase tracking-wider text-gray-400 whitespace-nowrap; }
+.data-table th.num { @apply text-right; }
+.data-table td { @apply py-2.5 px-3 border-b border-gray-50 text-gray-600 align-middle; }
+.data-table td.num { @apply text-right font-mono text-[12px] tabular-nums text-gray-900; }
+.data-table td.notes { @apply text-[11px] text-gray-500 max-w-[220px]; }
+.data-table tbody tr { @apply hover:bg-gray-50/80; }
+.data-table tbody tr.row-site td:first-child { @apply font-semibold text-gray-900; }
+.data-table tbody tr.row-phase td:first-child { @apply font-normal text-gray-700; }
+.data-table tbody tr.row-totals { @apply bg-gray-50 font-semibold border-t-2 border-gray-200; }
+.data-table tbody tr.row-totals td { @apply text-gray-900 border-b-0; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.35s ease-out both; }
+
+.pattern-dots {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.font-display {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.qa-stat-glass {
+  @apply rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-3.5;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #eef0f3 25%, #f8f9fa 50%, #eef0f3 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  @apply rounded-2xl;
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+
+.login-panel {
+  background: linear-gradient(145deg, #0f1b2d 0%, #1a2942 50%, #1e3354 100%);
+}

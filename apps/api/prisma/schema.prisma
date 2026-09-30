@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PM
+  QA
+  FINANCE
+  CEO
+  ADMIN
+}
+
+enum ProjectType {
+  MANAGED
+  RENOVATION
+  DEVELOPMENT
+}
+
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum DocumentCategory {
+  PLAN
+  PERMIT
+  CONTRACT
+  REPORT
+  OTHER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         UserRole @default(PM)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  managedProjects  Project[]  @relation("ProjectManager")
+  createdProjects  Project[]  @relation("ProjectCreator")
+  documents        Document[]
+  auditLogs        AuditLog[]
+}
+
+model Property {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  city        String?
+  country     String?  @default("US")
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  projects Project[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  type        ProjectType
+  status      ProjectStatus @default(DRAFT)
+  description String?
+  budgetUsd   Decimal?      @db.Decimal(14, 2)
+  startDate   DateTime?
+  endDate     DateTime?
+  propertyId  String
+  managerId   String?
+  createdById String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  property  Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  manager   User?      @relation("ProjectManager", fields: [managerId], references: [id], onDelete: SetNull)
+  createdBy User       @relation("ProjectCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  documents Document[]
+  tasks     Task[]
+
+  @@index([createdById])
+}
+
+enum TaskStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+}
+
+model Task {
+  id            String     @id @default(cuid())
+  projectId     String
+  name          String
+  startDate     DateTime
+  endDate       DateTime
+  progress      Int        @default(0)
+  status        TaskStatus @default(NOT_STARTED)
+  isMilestone   Boolean    @default(false)
+  predecessorId String?
+  sortOrder     Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  predecessor Task?   @relation("TaskDependency", fields: [predecessorId], references: [id], onDelete: SetNull)
+  successors  Task[]  @relation("TaskDependency")
+
+  @@index([projectId])
+}
+
+model Document {
+  id           String           @id @default(cuid())
+  projectId    String
+  name         String
+  category     DocumentCategory @default(OTHER)
+  fileName     String
+  mimeType     String
+  sizeBytes    Int
+  uploadedById String
+  createdAt    DateTime         @default(now())
+
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploadedBy User    @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+/** Alamait executive portfolio overview (QA spreadsheet). */
+enum PortfolioRowStatus {
+  COMPLETED
+  ONGOING
+  NOT_STARTED
+}
+
+model PortfolioSite {
+  id              String              @id
+  name            String
+  sortOrder       Int
+  percentComplete Int?
+  status          PortfolioRowStatus?
+  budgetCapex     Decimal?            @db.Decimal(14, 2)
+  actualSpend     Decimal?            @db.Decimal(14, 2)
+  estToComplete   Decimal?            @db.Decimal(14, 2)
+  forecastTotal   Decimal?            @db.Decimal(14, 2)
+  variance        Decimal?            @db.Decimal(14, 2)
+  cashFlowNeed30d Decimal?            @db.Decimal(14, 2)
+  notes           String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
+
+  phases PortfolioPhase[]
+
+  @@map("portfolio_site")
+}
+
+model PortfolioPhase {
+  id              String              @id
+  siteId          String
+  name            String
+  sortOrder       Int
+  percentComplete Int?
+  status          PortfolioRowStatus?
+  budgetCapex     Decimal?            @db.Decimal(14, 2)
+  actualSpend     Decimal?            @db.Decimal(14, 2)
+  estToComplete   Decimal?            @db.Decimal(14, 2)
+  forecastTotal   Decimal?            @db.Decimal(14, 2)
+  variance        Decimal?            @db.Decimal(14, 2)
+  cashFlowNeed30d Decimal?            @db.Decimal(14, 2)
+  notes           String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
+
+  site PortfolioSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+  @@map("portfolio_phase")
+}
+
+model PortfolioOverviewTotals {
+  id              String   @id @default("alamait-portfolio-totals")
+  budgetCapex     Decimal? @db.Decimal(14, 2)
+  actualSpend     Decimal? @db.Decimal(14, 2)
+  estToComplete   Decimal? @db.Decimal(14, 2)
+  forecastTotal   Decimal? @db.Decimal(14, 2)
+  variance        Decimal? @db.Decimal(14, 2)
+  cashFlowNeed30d Decimal? @db.Decimal(14, 2)
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@map("portfolio_overview_totals")
+}

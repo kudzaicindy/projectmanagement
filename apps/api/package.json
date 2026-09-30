@@ -1,0 +1,48 @@
+{
+  "name": "@estatepm/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "nest build && nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:seed": "ts-node --transpile-only prisma/seed.ts",
+    "db:properties:load": "prisma db execute --file ../../scripts/alamait-properties-and-projects.sql --schema prisma/schema.prisma",
+    "db:portfolio:load": "prisma db execute --file ../../scripts/alamait-portfolio-overview.sql --schema prisma/schema.prisma",
+    "db:clean:load": "prisma db execute --file ../../scripts/delete-demo-data.sql --schema prisma/schema.prisma",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/mapped-types": "^2.1.0",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/platform-express": "^11.1.6",
+    "@prisma/client": "^6.16.2",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.10",
+    "@nestjs/schematics": "^11.0.7",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.5.2",
+    "@types/passport-jwt": "^4.0.1",
+    "prisma": "^6.16.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
